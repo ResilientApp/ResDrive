@@ -1,9 +1,19 @@
 # ResDrive
 A decentralized personal cloud based on ResilientDB blockchain and IPFS cluster
 
+## Key features
+1. Decentralized Architecture: Our system avoids the need for a central server. All messages are transmitted through 
+ResilientDB blockchain and IPFS cluster.
+2. Data storage: Metadata are stored in ResilientDB blockchain i.e. file structure, file hash etc. Files are stored in
+IPFS cluster.
+3. Security: All the data stored in ResilientDB blockchain are encrypted by RSA. Files are broken into chunks and
+encrypted by Fernet stored in IPFS cluster
+
+
 ## How to run
 ### System requirement
-1. A running IPFS entry point(Please follow [Link](https://docs.ipfs.tech/install/ipfs-desktop/) to deploy IPFS Desktop on Ubuntu or [Link](https://docs.ipfs.tech/install/run-ipfs-inside-docker/) deploy IPFS through Docker)
+1. A running IPFS entry point(Please follow [Link](https://docs.ipfs.tech/install/ipfs-desktop/) to deploy IPFS 
+Desktop on Ubuntu or [Link](https://docs.ipfs.tech/install/run-ipfs-inside-docker/) deploy IPFS through Docker)
 2. Ubuntu 22.04 LTS
 3. Python 3.10
 4. bazel 5.0 or 7.0 `sudo apt install bazel-5.0.0`
