@@ -29,12 +29,11 @@ Desktop on Ubuntu or [Link](https://docs.ipfs.tech/install/run-ipfs-inside-docke
 3. Start client `python start_client.py`
 
 ## Operations
-1. `cd`:
-2. `ls`:
-3. `mkdir`:
-4. `rm`:
-5. `login`:
-6. `signup`:
-7. `upload`:
-8. `download`:
-9. `cd..`:
+1. `cd`: Change to target folder`cd [TARGET_FOLDER]`
+2. `ls`: Will list all contents under this folder
+3. `mkdir`: Create a new folder under your current directory `mkdir [NEW_FOLDER_NAME]`
+4. `rm`: Delete a folder `rm [TARGET_FOLDER_NAME]`
+5. `upload`:
+6. `download`:
+7. `back`: Go back to previous folder
+8. `share`:

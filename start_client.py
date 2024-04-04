@@ -96,7 +96,10 @@ while True:
     elif operation[0] == "root":
         current_location = ['root']
     elif operation[0] == "back":
-        current_location.pop()
+        if current_location == ['root']:
+            print("You already at /root")
+        else:
+            current_location.pop()
     elif operation[0] == "clear":
         util.clear_screen()
     elif operation[0] == "share":
