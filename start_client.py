@@ -75,7 +75,9 @@ while True:
 
     # 处理rm指令
     elif operation[0] == "rm":
-        pass
+        inner_folder = util.get_inner_folder(file_structure, current_location)
+        # TODO:没完事
+
     elif operation[0] == "mkdir":
         if len(operation) != 2:
             print("Please follow: mkdir [new folder name]")
@@ -93,7 +95,7 @@ while True:
         pass
     elif operation[0] == "root":
         current_location = ['root']
-    elif operation[0] == "cd..":
+    elif operation[0] == "back":
         current_location.pop()
     elif operation[0] == "clear":
         util.clear_screen()

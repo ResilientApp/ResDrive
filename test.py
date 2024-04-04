@@ -11,20 +11,8 @@ from kv_operation import get_value, set_value
 # file_hash = res['Hash']
 # print(file_hash)
 
-# set_value("aaa", "\n")
-# print(get_value("test public_key"))
-# util.string_to_public_key(get_value("test public_key"))
-#
-# fernet_key = Fernet.generate_key()
-# print(type(fernet_key.decode()))
-
-# pub, pri = util.load_rsa_keypair("test", "test")
-#
-# enc = util.encrypt_message_with_rsa(pub, "test")
-# dec = util.decrypt_message_with_rsa(pri, enc)
-#
-# print(dec)
-
-pub, pri = util.load_rsa_keypair("test", "test")
-set_value("test", util.encrypt_message_with_rsa(pub, json.dumps({"/root": {}})))
+# set_value("test", "\n")
+# set_value("test public_key", "\n")
+a = {"a": {"b": {}}}
+print(len(a['a']['b']))
 
