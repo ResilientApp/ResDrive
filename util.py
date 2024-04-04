@@ -1,9 +1,10 @@
 import base64
 import binascii
+import json
 import os
 import platform
-import json
-import os, sys
+import sys
+
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from cryptography.fernet import Fernet

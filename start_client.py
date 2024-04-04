@@ -92,11 +92,13 @@ while True:
     elif operation[0] == "download":
         pass
     elif operation[0] == "root":
-        pass
+        current_location = ['root']
     elif operation[0] == "cd..":
-        pass
+        current_location.pop()
     elif operation[0] == "clear":
         util.clear_screen()
+    elif operation[0] == "share":
+        pass
     else:
         pass
 
