@@ -6,8 +6,7 @@ A decentralized personal cloud based on ResilientDB blockchain and IPFS cluster
 ResilientDB blockchain and IPFS cluster.
 2. Data storage: Metadata are stored in ResilientDB blockchain i.e. file structure, file hash etc. Files are stored in
 IPFS cluster.
-3. Security: All the data stored in ResilientDB blockchain are encrypted by RSA. Files are broken into chunks and
-encrypted by Fernet stored in IPFS cluster
+3. Security: All the data stored in ResilientDB and in IPFS are encrypted by Fernet
 
 
 ## How to run
@@ -22,11 +21,11 @@ Desktop on Ubuntu or [Link](https://docs.ipfs.tech/install/run-ipfs-inside-docke
    2. pybind11 `pip install pybind11`
    3. cryptography `pip install cryptography`
    4. ipfshttpclient `pip install ipfshttpclient==0.8.0a2`(Please ignore the warning message of the daemon version)
-   5. psutil
+   5. psutil `pip install psutil`
 
 ### Start Service
 1. cd to `kv-service_python_api` folder
-2. Run `bazel build :pybind_kv_so`
+2. Run `bazel build :pybind_kv_so` to build ResilientDB kv-service Python API
 3. Start client `python start_client.py`
 
 ## Operations
@@ -34,8 +33,10 @@ Desktop on Ubuntu or [Link](https://docs.ipfs.tech/install/run-ipfs-inside-docke
 2. `ls`: Will list all contents under this folder
 3. `mkdir`: Create a new folder under your current directory `mkdir [NEW_FOLDER_NAME]`
 4. `rm`: Delete a folder `rm [TARGET_FOLDER_NAME]`
-5. `upload`:
-6. `download`:
+5. `upload`: Upload single/multiple file(s) `upload [file/folder path]`(If the path is a directory, system will scan and 
+upload every file, even those files in nested directories)
+6. `download`: Download single/multiple file(s) `download [file/folder name] [(optional)Path to save file(s)]`
+(If the second argument is not specified, file(s) will download into downloads directory under ResDrive folder)
 7. `back`: Go back to previous folder
-8. `share`:
-9. `detail`:
+8. `share`: UNDER DEVELOPING
+9. `detail`: Show file detail `detail [file name]`
