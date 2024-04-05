@@ -198,42 +198,6 @@ def upload_single_file(file_path: str, fernet_key, ipfs_config):
     return file_name, hash_list, file_size_mb, time_uploaded
 
 
-# def upload_single_file(file_path: str, fernet_key, ipfs_config):
-#     client = ipfshttpclient.connect(ipfs_config)
-#     chunk_size = int(psutil.virtual_memory().available * 0.01)
-#
-#     # 确保临时目录存在
-#     os.makedirs("tmp_upload", exist_ok=True)
-#
-#     if os.path.exists(file_path):
-#         file_name = os.path.basename(file_path)
-#         # 使用完整路径获取文件大小
-#         file_size_mb = round(os.path.getsize(file_path) / 1024 / 1024, 2)
-#
-#         encrypted_file_path = os.path.join("tmp_upload", file_name + ".encrypt")
-#         with open(file_path, 'rb') as input_file, open(encrypted_file_path, 'wb') as encrypted_file:
-#             while True:
-#                 chunk = input_file.read(chunk_size)
-#                 if not chunk:
-#                     break  # 文件读取完成
-#
-#                 encrypted_chunk = fernet_key.encrypt(chunk)
-#                 encrypted_file.write(encrypted_chunk)
-#
-#         res = client.add(encrypted_file_path)
-#         time_uploaded = datetime.datetime.now()
-#         file_hash = res['Hash']
-#         print(f"{file_name} uploaded successfully")
-#         # 删除临时加密文件
-#         os.remove(encrypted_file_path)
-#     else:
-#         print(f"{file_path} does not exist")
-#         return None
-#     return file_name, file_hash, file_size_mb, time_uploaded
-#
-#
-
-
 def download_single_file(file_hash: list, file_name: str, fernet_key, ipfs_config, save_path='downloads'):
     """下载文件快，解密，写入单个文件"""
     client = ipfshttpclient.connect(ipfs_config)
@@ -255,38 +219,3 @@ def download_single_file(file_hash: list, file_name: str, fernet_key, ipfs_confi
 
     print(f"{file_name} downloaded and decrypted successfully")
     return
-
-# def download_single_file(file_hash, file_name, fernet_key, ipfs_config, save_path):
-#     client = ipfshttpclient.connect(ipfs_config)
-#     chunk_size = int(psutil.virtual_memory().available * 0.01)
-#     # 确保下载目录存在
-#     os.makedirs(save_path, exist_ok=True)
-#
-#     # 临时下载路径
-#     temp_download_path = os.path.join("tmp_download", file_hash)
-#
-#         # 从IPFS下载加密的文件
-#         client.get(file_hash, target="tmp_download")
-#
-#         # 完整的保存路径
-#         temp_download_path = os.path.join("tmp_download", file_hash)
-#
-#         # 打开加密的文件，解密，然后保存解密后的内容
-#         with open(temp_download_path, 'rb') as encrypted_file, open(final_path, 'wb') as decrypted_file:
-#             while True:
-#                 # 读取加密文件的一部分
-#                 encrypted_chunk = encrypted_file.read(chunk_size)
-#                 if not encrypted_chunk:
-#                     break  # 文件读取完成
-#
-#                 # 解密并写入到最终文件
-#                 decrypted_chunk = fernet_key.decrypt(encrypted_chunk)
-#                 decrypted_file.write(decrypted_chunk)
-#
-#         print(f"{file_name} downloaded and decrypted successfully")
-
-#
-#     finally:
-#         # 清理：删除临时下载的加密文件
-#         if os.path.exists(temp_download_path):
-#             os.remove(temp_download_path)
