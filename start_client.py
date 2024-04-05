@@ -245,6 +245,8 @@ while True:
                 upload_date = file_detail['upload_time']
                 size_mb = file_detail['size_mb']
                 print(f"File name: {file_name} \t\t File size: {size_mb}MB \t\t Upload Date: {upload_date}")
-        pass
+    elif operation[0] == 'help':
+        os.system('cat ops.txt')
+        print()
     else:
         pass

@@ -1,0 +1,25 @@
+cd: Change to target directory
+    cd [target directory name]
+
+ls: Will list all contents under this directory, no parameter needed
+
+mkdir: Create a new directory under your current directory
+    mkdir [new directory name]
+
+rm: Delete a directory
+    rm [target directory name]
+
+upload: Upload single/multiple file(s) (If the path is a directory, system will scan and upload every file, even those files in nested directories)
+    upload [file/directory path]
+
+download: Download single/multiple file(s) (If the second parameter is not specified, file(s) will download into downloads directory under ResDrive directory)
+    download [file/directory name] [(optional)Path to save file(s)]
+
+back: Go back to previous directory, no parameter needed
+
+share: UNDER DEVELOPING
+
+detail: Show file detail
+    detail [file name]
+
+root: GO back to /root directory, no parameter needed

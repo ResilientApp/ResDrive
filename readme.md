@@ -24,19 +24,20 @@ Desktop on Ubuntu or [Link](https://docs.ipfs.tech/install/run-ipfs-inside-docke
    5. psutil `pip install psutil`
 
 ### Start Service
-1. cd to `kv-service_python_api` folder
+1. cd to `kv-service_python_api` directory
 2. Run `bazel build :pybind_kv_so` to build ResilientDB kv-service Python API
 3. Start client `python start_client.py`
 
 ## Operations
-1. `cd`: Change to target folder`cd [TARGET_FOLDER]`
-2. `ls`: Will list all contents under this folder
-3. `mkdir`: Create a new folder under your current directory `mkdir [NEW_FOLDER_NAME]`
-4. `rm`: Delete a folder `rm [TARGET_FOLDER_NAME]`
-5. `upload`: Upload single/multiple file(s) `upload [file/folder path]`(If the path is a directory, system will scan and 
+1. `cd`: Change to target directory`cd [target directory name]`
+2. `ls`: Will list all contents under this directory
+3. `mkdir`: Create a new directory under your current directory `mkdir [new directory name]`
+4. `rm`: Delete a directory `rm [target directory name]`
+5. `upload`: Upload single/multiple file(s) `upload [file/directory path]`(If the path is a directory, system will scan and 
 upload every file, even those files in nested directories)
-6. `download`: Download single/multiple file(s) `download [file/folder name] [(optional)Path to save file(s)]`
-(If the second argument is not specified, file(s) will download into downloads directory under ResDrive folder)
-7. `back`: Go back to previous folder
+6. `download`: Download single/multiple file(s) `download [file/directory name] [(optional)Path to save file(s)]`
+(If the second parameter is not specified, file(s) will download into downloads directory under ResDrive directory)
+7. `back`: Go back to previous directory, no parameter needed
 8. `share`: UNDER DEVELOPING
 9. `detail`: Show file detail `detail [file name]`
+10. `root`: GO back to `/root` directory, no parameter needed
