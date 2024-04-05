@@ -17,12 +17,17 @@ from kv_operation import get_value, set_value
 
 
 def load_config():
-    # 读取.config文件
+    """
+    读取ipfs.config文件来获取IPFS接入点的IP地址，端口号等信息
+    """
     with open('ipfs.config', 'r') as f:
         return f.readline()
 
 
 def load_rsa_keypair(username: str, password: str):
+    """
+    加载RSA公钥和私钥
+    """
     if os.path.exists('private_key.pem') and os.path.exists('public_key.pem'):
         with open('public_key.pem', 'rb') as f:
             public_key = RSA.import_key(f.read())
@@ -36,6 +41,9 @@ def load_rsa_keypair(username: str, password: str):
 
 
 def load_fernet_key():
+    """
+    加载Fernet密钥
+    """
     if os.path.exists('fernet.key'):
         with open('fernet.key', 'rb') as f:
             fernet_key = f.read()
@@ -43,14 +51,23 @@ def load_fernet_key():
 
 
 def public_key_to_string(public_key_bytes):
+    """
+    将RSA公钥转换为string格式
+    """
     return base64.b64encode(public_key_bytes).decode('utf-8')
 
 
 def string_to_public_key(pub_key_string):
+    """
+    将string转换为RSA公钥格式
+    """
     return RSA.importKey(pub_key_string.encode('utf-8'))
 
 
 def encrypt_message_with_rsa(pub_key, message: str or bytes):
+    """
+    将所给定的信息使用RSA公钥进行加密
+    """
     cipher_rsa = PKCS1_OAEP.new(pub_key)
     if type(message) is str:
         message = message.encode()
@@ -60,6 +77,9 @@ def encrypt_message_with_rsa(pub_key, message: str or bytes):
 
 
 def decrypt_message_with_rsa(pri_key, enc_message):
+    """
+    使用RSA私钥解密信息
+    """
     # 将十六进制字符串转换为字节
     encrypted_message_bytes = binascii.unhexlify(enc_message)
 
@@ -74,6 +94,9 @@ def decrypt_message_with_rsa(pri_key, enc_message):
 
 
 def get_inner_folder(file_structure: dict, current_folder: list) -> dict:
+    """
+    获取当前目录下的文件结构，返回一个Python字典
+    """
     sub_folder = file_structure
     for i in current_folder:
         sub_folder_name = "/" + i
@@ -82,6 +105,9 @@ def get_inner_folder(file_structure: dict, current_folder: list) -> dict:
 
 
 def create_user(username: str, password: str) -> bool:
+    """
+    创建用户，创建RSA公私钥，Fernet密钥，并将加密后的初始化文件夹结构上传到ResilientDB
+    """
     user_info = get_value(username)
     if user_info == "" or user_info == "\n":
         rsa_key = RSA.generate(2048)
@@ -104,7 +130,7 @@ def create_user(username: str, password: str) -> bool:
 
 def clear_screen():
     """
-    Clears the terminal screen.
+    清屏
     """
     # 检查操作系统
     os_name = platform.system()
@@ -116,26 +142,14 @@ def clear_screen():
         os.system('clear')
 
 
-def encrypt_file_with_fernet(fernet_key, file):
-    encrypted_data = fernet_key.encrypt(file)
-    return encrypted_data
-
-
-def decrypt_file_with_fernet(fernet_key, encrypted_file):
-    decrypted_data = fernet_key.decrypt(encrypted_file)
-    return decrypted_data
-
-
 def create_folder(file_structure, current_location, new_folder_name):
-    # Navigate to the current location in the file structure
+    """新建文件夹，将返回一个更新后的Python字典"""
     current_dict = file_structure
-    for folder in current_location:  # 假设current_location不包含前导'/'
-        folder_path = "/" + folder  # 如果file_structure的键以'/'开头
+    for folder in current_location:
+        folder_path = "/" + folder
         current_dict = current_dict.setdefault(folder_path, {})
 
-    # 当前current_dict指向current_location指定的最深层字典
-    # Create the new folder in the current location
-    new_folder_path = "/" + new_folder_name  # 保持一致的路径命名规则
+    new_folder_path = "/" + new_folder_name
     if new_folder_path not in current_dict:
         current_dict[new_folder_path] = {}
         print(f"Folder '{new_folder_name}' created.")
@@ -146,10 +160,11 @@ def create_folder(file_structure, current_location, new_folder_name):
 
 
 def upload_single_file(file_path: str, fernet_key, ipfs_config):
+    """
+    打开，分块读取，加密，上传单个文件
+    """
     client = ipfshttpclient.connect(ipfs_config)
     chunk_size = int(psutil.virtual_memory().available * 0.01)
-
-    # 确保临时目录存在
     tmp_upload_dir = "tmp_upload"
     os.makedirs(tmp_upload_dir, exist_ok=True)
 
@@ -163,17 +178,14 @@ def upload_single_file(file_path: str, fernet_key, ipfs_config):
                 chunk = input_file.read(chunk_size)
                 if not chunk:
                     time_uploaded = datetime.datetime.now()
-                    break  # 文件读取完成
+                    break
 
                 encrypted_chunk = fernet_key.encrypt(chunk)
                 encrypted_file_path = os.path.join(tmp_upload_dir, f"{file_name}_{count}.encrypt")
                 with open(encrypted_file_path, 'wb') as encrypted_file:
                     encrypted_file.write(encrypted_chunk)
-
                 res = client.add(encrypted_file_path)
                 hash_list.append(res['Hash'])
-
-                # 删除临时加密文件块
                 os.remove(encrypted_file_path)
 
                 count += 1
@@ -184,6 +196,7 @@ def upload_single_file(file_path: str, fernet_key, ipfs_config):
         return None
 
     return file_name, hash_list, file_size_mb, time_uploaded
+
 
 # def upload_single_file(file_path: str, fernet_key, ipfs_config):
 #     client = ipfshttpclient.connect(ipfs_config)
@@ -222,6 +235,7 @@ def upload_single_file(file_path: str, fernet_key, ipfs_config):
 
 
 def download_single_file(file_hash: list, file_name: str, fernet_key, ipfs_config, save_path='downloads'):
+    """下载文件快，解密，写入单个文件"""
     client = ipfshttpclient.connect(ipfs_config)
     # 确保下载目录存在
     os.makedirs('tmp_download', exist_ok=True)
@@ -232,25 +246,15 @@ def download_single_file(file_hash: list, file_name: str, fernet_key, ipfs_confi
 
     with open(final_path, 'wb') as final_file:
         for h in file_hash:
-            # 临时下载路径
-            # temp_download_path = os.path.join('tmp_download', h)
-
-            # 从IPFS下载加密的文件块
             client.get(h, target='tmp_download')
-
-            # 读取、解密、写入
             with open('tmp_download/' + h, 'rb') as temp_file:
                 encrypted_chunk = temp_file.read()
                 decrypted_chunk = fernet_key.decrypt(encrypted_chunk)
                 final_file.write(decrypted_chunk)
-
-            # 删除临时下载的加密文件块
             os.remove(f'tmp_download/{h}')
 
     print(f"{file_name} downloaded and decrypted successfully")
     return
-
-
 
 # def download_single_file(file_hash, file_name, fernet_key, ipfs_config, save_path):
 #     client = ipfshttpclient.connect(ipfs_config)
