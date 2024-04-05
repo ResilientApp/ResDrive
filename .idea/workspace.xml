@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c35425eb-8783-43fb-bde8-0f3ed034e0d6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/start_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/start_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,7 +103,7 @@
       <option name="presentableId" value="Default" />
       <updated>1712207110136</updated>
       <workItem from="1712207111165" duration="788000" />
-      <workItem from="1712275186554" duration="6105000" />
+      <workItem from="1712275186554" duration="6217000" />
     </task>
     <servers />
   </component>

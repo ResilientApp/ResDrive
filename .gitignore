@@ -1,7 +1,4 @@
-/kv-service_python_api/bazel-bin/
-/kv-service_python_api/bazel-kv-service_python_api/
-/kv-service_python_api/bazel-out/
-/kv-service_python_api/bazel-testlogs/
+/kv-service_python_api/bazel-*
 public_key.pem
 private_key.pem
 fernet.key
