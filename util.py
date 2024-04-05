@@ -1,9 +1,12 @@
 import base64
 import binascii
+import datetime
 import json
 import os
 import platform
 import sys
+import ipfshttpclient
+import psutil
 
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
@@ -15,11 +18,8 @@ from kv_operation import get_value, set_value
 
 def load_config():
     # 读取.config文件
-    with open('server_config.config', 'r') as f:
-        ipfs = f.readline().split(' ')
-        ipfs_ip = ipfs[0]
-        ipfs_port = int(ipfs[1])
-        return ipfs_ip, ipfs_port
+    with open('ipfs.config', 'r') as f:
+        return f.readline()
 
 
 def load_rsa_keypair(username: str, password: str):
@@ -138,7 +138,151 @@ def create_folder(file_structure, current_location, new_folder_name):
     new_folder_path = "/" + new_folder_name  # 保持一致的路径命名规则
     if new_folder_path not in current_dict:
         current_dict[new_folder_path] = {}
+        print(f"Folder '{new_folder_name}' created.")
     else:
         print(f"Folder '{new_folder_name}' already exists at {'/'.join(current_location)}")
 
     return file_structure
+
+
+def upload_single_file(file_path: str, fernet_key, ipfs_config):
+    client = ipfshttpclient.connect(ipfs_config)
+    chunk_size = int(psutil.virtual_memory().available * 0.01)
+
+    # 确保临时目录存在
+    tmp_upload_dir = "tmp_upload"
+    os.makedirs(tmp_upload_dir, exist_ok=True)
+
+    if os.path.exists(file_path):
+        file_name = os.path.basename(file_path)
+        file_size_mb = round(os.path.getsize(file_path) / 1024 / 1024, 2)
+        hash_list = []
+        count = 0
+        with open(file_path, 'rb') as input_file:
+            while True:
+                chunk = input_file.read(chunk_size)
+                if not chunk:
+                    time_uploaded = datetime.datetime.now()
+                    break  # 文件读取完成
+
+                encrypted_chunk = fernet_key.encrypt(chunk)
+                encrypted_file_path = os.path.join(tmp_upload_dir, f"{file_name}_{count}.encrypt")
+                with open(encrypted_file_path, 'wb') as encrypted_file:
+                    encrypted_file.write(encrypted_chunk)
+
+                res = client.add(encrypted_file_path)
+                hash_list.append(res['Hash'])
+
+                # 删除临时加密文件块
+                os.remove(encrypted_file_path)
+
+                count += 1
+
+        print(f"{file_name} uploaded successfully")
+    else:
+        print(f"{file_path} does not exist")
+        return None
+
+    return file_name, hash_list, file_size_mb, time_uploaded
+
+# def upload_single_file(file_path: str, fernet_key, ipfs_config):
+#     client = ipfshttpclient.connect(ipfs_config)
+#     chunk_size = int(psutil.virtual_memory().available * 0.01)
+#
+#     # 确保临时目录存在
+#     os.makedirs("tmp_upload", exist_ok=True)
+#
+#     if os.path.exists(file_path):
+#         file_name = os.path.basename(file_path)
+#         # 使用完整路径获取文件大小
+#         file_size_mb = round(os.path.getsize(file_path) / 1024 / 1024, 2)
+#
+#         encrypted_file_path = os.path.join("tmp_upload", file_name + ".encrypt")
+#         with open(file_path, 'rb') as input_file, open(encrypted_file_path, 'wb') as encrypted_file:
+#             while True:
+#                 chunk = input_file.read(chunk_size)
+#                 if not chunk:
+#                     break  # 文件读取完成
+#
+#                 encrypted_chunk = fernet_key.encrypt(chunk)
+#                 encrypted_file.write(encrypted_chunk)
+#
+#         res = client.add(encrypted_file_path)
+#         time_uploaded = datetime.datetime.now()
+#         file_hash = res['Hash']
+#         print(f"{file_name} uploaded successfully")
+#         # 删除临时加密文件
+#         os.remove(encrypted_file_path)
+#     else:
+#         print(f"{file_path} does not exist")
+#         return None
+#     return file_name, file_hash, file_size_mb, time_uploaded
+#
+#
+
+
+def download_single_file(file_hash: list, file_name: str, fernet_key, ipfs_config, save_path='downloads'):
+    client = ipfshttpclient.connect(ipfs_config)
+    # 确保下载目录存在
+    os.makedirs('tmp_download', exist_ok=True)
+    os.makedirs('downloads', exist_ok=True)
+
+    # 完整的保存路径
+    final_path = os.path.join(save_path, file_name)
+
+    with open(final_path, 'wb') as final_file:
+        for h in file_hash:
+            # 临时下载路径
+            # temp_download_path = os.path.join('tmp_download', h)
+
+            # 从IPFS下载加密的文件块
+            client.get(h, target='tmp_download')
+
+            # 读取、解密、写入
+            with open('tmp_download/' + h, 'rb') as temp_file:
+                encrypted_chunk = temp_file.read()
+                decrypted_chunk = fernet_key.decrypt(encrypted_chunk)
+                final_file.write(decrypted_chunk)
+
+            # 删除临时下载的加密文件块
+            os.remove(f'tmp_download/{h}')
+
+    print(f"{file_name} downloaded and decrypted successfully")
+    return
+
+
+
+# def download_single_file(file_hash, file_name, fernet_key, ipfs_config, save_path):
+#     client = ipfshttpclient.connect(ipfs_config)
+#     chunk_size = int(psutil.virtual_memory().available * 0.01)
+#     # 确保下载目录存在
+#     os.makedirs(save_path, exist_ok=True)
+#
+#     # 临时下载路径
+#     temp_download_path = os.path.join("tmp_download", file_hash)
+#
+#         # 从IPFS下载加密的文件
+#         client.get(file_hash, target="tmp_download")
+#
+#         # 完整的保存路径
+#         temp_download_path = os.path.join("tmp_download", file_hash)
+#
+#         # 打开加密的文件，解密，然后保存解密后的内容
+#         with open(temp_download_path, 'rb') as encrypted_file, open(final_path, 'wb') as decrypted_file:
+#             while True:
+#                 # 读取加密文件的一部分
+#                 encrypted_chunk = encrypted_file.read(chunk_size)
+#                 if not encrypted_chunk:
+#                     break  # 文件读取完成
+#
+#                 # 解密并写入到最终文件
+#                 decrypted_chunk = fernet_key.decrypt(encrypted_chunk)
+#                 decrypted_file.write(decrypted_chunk)
+#
+#         print(f"{file_name} downloaded and decrypted successfully")
+
+#
+#     finally:
+#         # 清理：删除临时下载的加密文件
+#         if os.path.exists(temp_download_path):
+#             os.remove(temp_download_path)

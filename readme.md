@@ -22,6 +22,7 @@ Desktop on Ubuntu or [Link](https://docs.ipfs.tech/install/run-ipfs-inside-docke
    2. pybind11 `pip install pybind11`
    3. cryptography `pip install cryptography`
    4. ipfshttpclient `pip install ipfshttpclient==0.8.0a2`(Please ignore the warning message of the daemon version)
+   5. psutil
 
 ### Start Service
 1. cd to `kv-service_python_api` folder
@@ -37,3 +38,4 @@ Desktop on Ubuntu or [Link](https://docs.ipfs.tech/install/run-ipfs-inside-docke
 6. `download`:
 7. `back`: Go back to previous folder
 8. `share`:
+9. `detail`:

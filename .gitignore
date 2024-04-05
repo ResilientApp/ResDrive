@@ -8,3 +8,4 @@ fernet.key
 /kv-service_python_api/MODULE.bazel
 /kv-service_python_api/MODULE.bazel.lock
 __pycache__
+test.jpeg
