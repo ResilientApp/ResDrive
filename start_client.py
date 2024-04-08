@@ -231,7 +231,7 @@ while True:
             # 目标在该目录下
             if target_path in inner_folder:
                 # 目标为目录并且该目录下用内容
-                if len(inner_folder) != 0 and target_path.startswith('/'):
+                if len(inner_folder[target_path]) != 0 and target_path.startswith('/'):
                     answer = input(
                         f"{target_name} is not empty, rm will remove all contents inside this folder, "
                         f"do you want to continue [y]/n: ")
@@ -277,6 +277,7 @@ while True:
             # 启用线程后台处理上传，以便用户可以在上传的同时进行其他操作
             upload_thread = threading.Thread(target=encapsulated_upload, args=(operation[1],))
             upload_thread.start()
+            # upload_thread.join()
             continue
 
     # 处理download指令
@@ -290,12 +291,14 @@ while True:
                 # 启用线程后台处理下载，以便用户可以在下载的同时进行其他操作
                 download_thread = threading.Thread(target=encapsulated_download, args=(operation[1],))
                 download_thread.start()
+                download_thread.join()
                 continue
             # 将文件下载到用户指定的目录中
             else:
                 # 启用线程后台处理下载，以便用户可以在下载的同时进行其他操作
                 download_thread = threading.Thread(target=encapsulated_download, args=(operation[1], operation[2],))
                 download_thread.start()
+                download_thread.join()
                 continue
 
     # 处理root指令
