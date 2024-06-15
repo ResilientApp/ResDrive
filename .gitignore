@@ -6,3 +6,8 @@ fernet.key
 /kv-service_python_api/MODULE.bazel.lock
 __pycache__
 test.jpeg
+.ijwb
+.vscode
+.idea
+node_modules/
+__pycache__/
