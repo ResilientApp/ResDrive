@@ -16,6 +16,7 @@ sys.path.append("kv-service_python_api")
 from kv_operation import get_value, set_value
 
 
+
 def load_config():
     """
     读取ipfs.config文件来获取IPFS接入点的IP地址，端口号等信息
